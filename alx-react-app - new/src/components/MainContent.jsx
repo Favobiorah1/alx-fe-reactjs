@@ -1,6 +1,8 @@
+// src/components/MainContent.jsx
+
 function MainContent() {
   return (
-    <main>
+    <main style={{ backgroundColor: '#f0f8ff', padding: '20px', fontSize: '18px' }}>
       <p>I love to visit New York, Paris, and Tokyo.</p>
     </main>
   );
