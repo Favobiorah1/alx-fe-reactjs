@@ -1,35 +1,31 @@
+// App.jsx
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './Components/Navbar';
-import Home from './Home';
-import About from './About';
-import Services from './Services';
-import Contact from './Contact';
-import Footer from './Footer';
+import Home from './components/Home';
+import About from './components/About';
+import Services from './components/Services';
+import Contact from './components/Contact';
+import Profile from './components/Profile';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
-  const appStyle = {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column'
-  };
-
-  const contentStyle = {
-    flex: '1'
-  };
-
   return (
     <Router>
-      <div style={appStyle}>
+      <div className="App">
         <Navbar />
-        <div style={contentStyle}>
+        <main>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
-        </div>
-        <Footer />
+        </main>
       </div>
     </Router>
   );
