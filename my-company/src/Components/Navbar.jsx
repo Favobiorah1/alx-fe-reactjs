@@ -1,65 +1,107 @@
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import './Navbar.css';
 
-function Navbar() {
-  const navStyle = {
-    backgroundColor: '#2c3e50',
-    padding: '15px 20px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
-  const linkStyle = {
-    color: 'white',
-    textDecoration: 'none',
-    margin: '0 20px',
-    padding: '10px 15px',
-    borderRadius: '5px',
-    transition: 'background-color 0.3s',
-    fontWeight: '500'
+  const closeMenu = () => {
+    setIsMenuOpen(false);
   };
 
-  const hoverStyle = {
-    backgroundColor: '#34495e'
+  const isActiveLink = (path) => {
+    return location.pathname === path;
   };
 
   return (
-    <nav style={navStyle}>
-      <Link 
-        to="/" 
-        style={linkStyle}
-        onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)}
-        onMouseOut={(e) => Object.assign(e.target.style, linkStyle)}
-      >
-        Home
-      </Link>
-      <Link 
-        to="/about" 
-        style={linkStyle}
-        onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)}
-        onMouseOut={(e) => Object.assign(e.target.style, linkStyle)}
-      >
-        About
-      </Link>
-      <Link 
-        to="/services" 
-        style={linkStyle}
-        onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)}
-        onMouseOut={(e) => Object.assign(e.target.style, linkStyle)}
-      >
-        Services
-      </Link>
-      <Link 
-        to="/contact" 
-        style={linkStyle}
-        onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)}
-        onMouseOut={(e) => Object.assign(e.target.style, linkStyle)}
-      >
-        Contact
-      </Link>
+    <nav className="navbar">
+      <div className="navbar-container">
+        {/* Logo/Brand */}
+        <Link to="/" className="navbar-brand" onClick={closeMenu}>
+          <h2>MyApp</h2>
+        </Link>
+
+        {/* Mobile menu button */}
+        <button 
+          className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        {/* Navigation links */}
+        <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
+          <div className="navbar-nav">
+            <Link 
+              to="/" 
+              className={`nav-link ${isActiveLink('/') ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              Home
+            </Link>
+            
+            <Link 
+              to="/about" 
+              className={`nav-link ${isActiveLink('/about') ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              About
+            </Link>
+            
+            <Link 
+              to="/services" 
+              className={`nav-link ${isActiveLink('/services') ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              Services
+            </Link>
+            
+            <Link 
+              to="/contact" 
+              className={`nav-link ${isActiveLink('/contact') ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              Contact
+            </Link>
+            
+            <Link 
+              to="/profile" 
+              className={`nav-link ${isActiveLink('/profile') ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              Profile
+            </Link>
+          </div>
+
+          {/* Auth buttons */}
+          <div className="navbar-auth">
+            <Link 
+              to="/login" 
+              className="btn btn-outline"
+              onClick={closeMenu}
+            >
+              Login
+            </Link>
+            <Link 
+              to="/register" 
+              className="btn btn-primary"
+              onClick={closeMenu}
+            >
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
