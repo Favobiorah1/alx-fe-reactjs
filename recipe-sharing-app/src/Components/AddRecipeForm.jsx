@@ -11,7 +11,6 @@ const AddRecipeForm = () => {
     if (!title || !description) return;
 
     addRecipe({ id: Date.now(), title, description });
-
     setTitle('');
     setDescription('');
   };
