@@ -1,6 +1,6 @@
 // src/App.jsx
 import React, { useState } from "react";
-import useRecipeStore from "./components/recipeStore";
+import useRecipeStore from "./components/recipeStore. js";
 
 function App() {
   // get data + actions from the store
