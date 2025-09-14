@@ -1,7 +1,9 @@
-import { useParams } from 'react-router-dom';
-import { useRecipeStore } from '../recipeStore';
+// src/components/RecipeDetails.jsx
+import { useParams, Link } from 'react-router-dom';
+import { useRecipeStore } from './recipeStore';
 import EditRecipeForm from './EditRecipeForm';
 import DeleteRecipeButton from './DeleteRecipeButton';
+import { useState } from 'react';
 
 const RecipeDetails = () => {
   const { id } = useParams();
@@ -9,15 +11,34 @@ const RecipeDetails = () => {
     state.recipes.find((r) => r.id === Number(id))
   );
 
-  if (!recipe) return <p>Recipe not found</p>;
+  const [editing, setEditing] = useState(false);
+
+  if (!recipe) {
+    return (
+      <div>
+        <p>Recipe not found.</p>
+        <Link to="/">Back to Home</Link>
+      </div>
+    );
+  }
 
   return (
     <div>
       <h1>{recipe.title}</h1>
       <p>{recipe.description}</p>
 
-      <EditRecipeForm recipe={recipe} />
-      <DeleteRecipeButton id={recipe.id} />
+      {editing ? (
+        <EditRecipeForm recipe={recipe} setEditingId={() => setEditing(false)} />
+      ) : (
+        <>
+          <button onClick={() => setEditing(true)}>Edit</button>
+          <DeleteRecipeButton recipeId={recipe.id} />
+        </>
+      )}
+
+      <div>
+        <Link to="/">⬅ Back to Home</Link>
+      </div>
     </div>
   );
 };
