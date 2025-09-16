@@ -1,49 +1,44 @@
-import { useState } from 'react';
-import { useRecipeStore } from '../recipeStore';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import useRecipeStore from '../store/recipeStore'
 
 const AddRecipeForm = () => {
-  const addRecipe = useRecipeStore((s) => s.addRecipe);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const navigate = useNavigate();
+  const addRecipe = useRecipeStore((state) => state.addRecipe)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
-
-    const newRecipe = {
-      id: Date.now().toString(),
-      title: title.trim(),
-      description: description.trim(),
-    };
-
-    addRecipe(newRecipe);
-
-    // clear form and navigate to details
-    setTitle('');
-    setDescription('');
-    navigate(`/recipes/${newRecipe.id}`);
-  };
+    e.preventDefault()
+    if (!title.trim() || !description.trim()) return
+    addRecipe({
+      id: Date.now(),
+      title,
+      description,
+    })
+    setTitle('')
+    setDescription('')
+  }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '1.5rem' }}>
+    <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
       <input
         type="text"
         placeholder="Recipe title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        style={{ display: 'block', marginBottom: '0.5rem', width: '100%' }}
+        style={{ marginRight: '10px', padding: '5px' }}
       />
-      <textarea
-        placeholder="Recipe description"
+      <input
+        type="text"
+        placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        style={{ display: 'block', marginBottom: '0.5rem', width: '100%' }}
+        style={{ marginRight: '10px', padding: '5px' }}
       />
-      <button type="submit">Add Recipe</button>
+      <button type="submit" style={{ padding: '5px 10px' }}>
+        Add Recipe
+      </button>
     </form>
-  );
-};
+  )
+}
 
-export default AddRecipeForm;
+export default AddRecipeForm
