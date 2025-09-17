@@ -1,15 +1,18 @@
-export const fetchGitHubUser = async (username) => {
-  const apiKey = import.meta.env.VITE_APP_GITHUB_API_KEY
+import axios from "axios";
 
-  const response = await fetch(`https://api.github.com/users/${username}`, {
-    headers: {
-      Authorization: apiKey ? `Bearer ${apiKey}` : undefined,
-    },
-  })
+const API_URL = "https://api.github.com/users";
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch GitHub user')
+const API_KEY = import.meta.env.VITE_APP_GITHUB_API_KEY; // from .env
+
+export const fetchUserData = async (username) => {
+  try {
+    const response = await axios.get(`${API_URL}/${username}`, {
+      headers: {
+        Authorization: `token ${API_KEY}`, // token for higher rate limit
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("User not found");
   }
-
-  return response.json()
-}
+};
