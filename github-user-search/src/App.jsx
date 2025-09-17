@@ -1,12 +1,10 @@
 import Search from "./components/Search";
 
-function App() {
+export default function App() {
   return (
     <div>
-      <h1 style={{ textAlign: "center" }}>GitHub User Search</h1>
+      <h1>GitHub User Search</h1>
       <Search />
     </div>
   );
 }
-
-export default App;
