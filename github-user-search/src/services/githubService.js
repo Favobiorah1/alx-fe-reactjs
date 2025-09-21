@@ -1,37 +1,17 @@
-import axios from "axios";
+// src/services/githubService.js
 
-/**
- * Advanced GitHub user search
- * @param {Object} options
- * @param {string} options.query - main keyword (username or general search)
- * @param {string} [options.location] - optional location filter
- * @param {number} [options.minRepos] - optional minimum public repositories
- */
-export const searchUsers = async ({ query, location = "", minRepos = 0 }) => {
-  try {
-    // Build GitHub Search API query
-    let searchQuery = query || "";
+const GITHUB_API = "https://api.github.com/users";
 
-    if (location) {
-      searchQuery += ` location:${location}`;
-    }
+// 🔍 Search for users by query
+export async function searchUsers(query) {
+  const response = await fetch(`https://api.github.com/search/users?q=${query}`);
+  if (!response.ok) throw new Error("Failed to search users");
+  return response.json();
+}
 
-    if (minRepos > 0) {
-      // ✅ include repos filter for minimum repo count
-      searchQuery += ` repos:>=${minRepos}`;
-    }
-
-    const response = await axios.get(
-      `https://api.github.com/search/users?q=${encodeURIComponent(searchQuery)}`,
-      {
-        headers: {
-          Authorization: `token ${import.meta.env.VITE_APP_GITHUB_API_KEY}`,
-        },
-      }
-    );
-
-    return response.data; // returns { total_count, items: [...] }
-  } catch (error) {
-    throw new Error("GitHub user search failed");
-  }
-};
+// 👤 Get details of a single user
+export async function getUser(username) {
+  const response = await fetch(`${GITHUB_API}/${username}`);
+  if (!response.ok) throw new Error("Failed to fetch user");
+  return response.json();
+}
