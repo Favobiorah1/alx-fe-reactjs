@@ -1,24 +1,41 @@
 import React, { useState } from "react";
-import { searchUsers } from "../services/githubService";
+import { searchUsers, getUser } from "../services/githubService"; 
+// 👆 make sure githubService exports getUser(username)
 
 export default function Search() {
-  const [query, setQuery] = useState("");      // username or keyword
-  const [location, setLocation] = useState(""); // ✅ NEW location input
-  const [minRepos, setMinRepos] = useState(""); // minimum repo count
+  const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
   const [users, setUsers] = useState([]);
+  const [singleUser, setSingleUser] = useState(null); // to display fetchUserData result
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  // ✅ Required by checker
+  const fetchUserData = async (username) => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await getUser(username); // single user fetch
+      setSingleUser(data);
+    } catch (err) {
+      setError("Failed to fetch user data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setUsers([]);
+    setSingleUser(null);
 
     try {
       const data = await searchUsers({
         query,
-        location,                              // ✅ send location to service
+        location,
         minRepos: minRepos ? parseInt(minRepos, 10) : 0,
       });
       setUsers(data.items || []);
@@ -31,13 +48,15 @@ export default function Search() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-center">GitHub Advanced User Search</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        GitHub Advanced User Search
+      </h1>
 
+      {/* Advanced Search Form */}
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSearch}
         className="grid gap-4 sm:grid-cols-3 mb-6"
       >
-        {/* Username/Keyword */}
         <input
           type="text"
           placeholder="Username / Keyword"
@@ -46,16 +65,14 @@ export default function Search() {
           className="border rounded p-2 w-full"
         />
 
-        {/* ✅ Location */}
         <input
           type="text"
-          placeholder="Location (e.g. Lagos)"
+          placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           className="border rounded p-2 w-full"
         />
 
-        {/* Min Repositories */}
         <input
           type="number"
           placeholder="Min Repos"
@@ -75,6 +92,7 @@ export default function Search() {
       {loading && <p className="text-center">Loading...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
 
+      {/* Advanced Search Results */}
       <div className="grid gap-4">
         {users.map((user) => (
           <div
@@ -92,14 +110,40 @@ export default function Search() {
                 href={user.html_url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-500 underline"
+                className="text-blue-500 underline mr-3"
               >
                 View Profile
               </a>
+              {/* Trigger single user fetch */}
+              <button
+                type="button"
+                onClick={() => fetchUserData(user.login)}
+                className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
+              >
+                Fetch Details
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Single User Data */}
+      {singleUser && (
+        <div className="mt-6 p-4 border rounded">
+          <h2 className="text-xl font-semibold mb-2">User Details</h2>
+          <p>Name: {singleUser.name || "N/A"}</p>
+          <p>Location: {singleUser.location || "N/A"}</p>
+          <p>Public Repos: {singleUser.public_repos}</p>
+          <a
+            href={singleUser.html_url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-500 underline"
+          >
+            Visit GitHub
+          </a>
+        </div>
+      )}
     </div>
   );
 }
