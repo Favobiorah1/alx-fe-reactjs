@@ -1,18 +1,37 @@
 import axios from "axios";
 
-// Search GitHub users by a query (username, location, etc.)
-export const searchUsers = async (query) => {
+/**
+ * Advanced GitHub user search
+ * @param {Object} options
+ * @param {string} options.query - main keyword (username or general search)
+ * @param {string} [options.location] - optional location filter
+ * @param {number} [options.minRepos] - optional minimum public repositories
+ */
+export const searchUsers = async ({ query, location = "", minRepos = 0 }) => {
   try {
+    // Build GitHub Search API query
+    let searchQuery = query || "";
+
+    if (location) {
+      searchQuery += ` location:${location}`;
+    }
+
+    if (minRepos > 0) {
+      // ✅ include repos filter for minimum repo count
+      searchQuery += ` repos:>=${minRepos}`;
+    }
+
     const response = await axios.get(
-      `https://api.github.com/search/users?q=${encodeURIComponent(query)}`,
+      `https://api.github.com/search/users?q=${encodeURIComponent(searchQuery)}`,
       {
         headers: {
           Authorization: `token ${import.meta.env.VITE_APP_GITHUB_API_KEY}`,
         },
       }
     );
-    return response.data; // contains { total_count, items: [...] }
+
+    return response.data; // returns { total_count, items: [...] }
   } catch (error) {
-    throw new Error("User search failed");
+    throw new Error("GitHub user search failed");
   }
 };
